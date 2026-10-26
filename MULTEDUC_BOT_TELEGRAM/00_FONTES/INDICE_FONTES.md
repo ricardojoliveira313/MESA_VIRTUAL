@@ -20,6 +20,7 @@
 | 11 | Resposta do DeepSeek à revisão de Claude | `C:\MESA_VIRTUAL\MULTEDUC_BOT_TELEGRAM\05_REVISAO_CRUZADA\RESPOSTA_DEEPSEEK_A_REVISAO_CLAUDE.md` | Revisão cruzada | Posição revisada sobre D1–D6, evidência nova, matriz provisória e decisões pedidas ao Mediador | Depositada em 25/10/2026 |
 | 12 | Parecer do ChatGPT | `02_PARECER_CHATGPT/` | Parecer formal | Não depositado como arquivo nesta Mesa | **Ausente** |
 | 13 | Parecer da rodada 1 do Claude | `04_PARECER_CLAUDE/` | Parecer formal | Citado na revisão (F5, F8, F9), mas não depositado como arquivo separado | **Ausente como arquivo** |
+| 14 | Análise da página `/telegram-avisos` | `C:\MESA_VIRTUAL\MULTEDUC_BOT_TELEGRAM\05_REVISAO_CRUZADA\ANALISE_ABA_TELEGRAM_2026-10-26.md` | Análise técnica | Estado da tela, do bot, do calendário e das perguntas; achados e riscos | Depositada em 26/10/2026 |
 
 ## Observações de evidência
 
@@ -30,3 +31,4 @@
 5. Não há dados pessoais de crianças, responsáveis ou servidores neste índice.
 6. O parecer do ChatGPT e o parecer da rodada 1 do Claude precisam ser depositados antes da matriz de divergências final. A revisão cruzada de Claude não substitui seu parecer formal.
 7. O `schema.prisma` pode ser código morto; o schema real do Supabase continua ausente. Nenhuma conclusão física de banco deve ser tratada como provada antes dessa leitura.
+8. A análise da página Telegram foi feita sobre `origin/main` commit `234b0a2`. O `main` local em `C:\diario_classe` estava em `fb14cb9`, 720 commits atrás, e não continha `frontend/src/pages/TelegramAvisos.tsx`. As afirmações de produção são relatos do RASTRO; não houve acesso à tela autenticada nem ao Supabase.

@@ -105,5 +105,6 @@ O caso para e devolve ao Mediador se:
 | 25/10/2026 | EM_ANÁLISE | Parecer DeepSeek produzido |
 | 25/10/2026 | EM_REVISÃO | Pareceres de ChatGPT e Claude recebidos; revisão cruzada DeepSeek registrada em `05_REVISAO_CRUZADA/PARECER_DEEPSEEK_RODADA2.md` |
 | 25/10/2026 | EM_REVISÃO | Revisão cruzada de Claude depositada; resposta do DeepSeek depositada; parecer formal do ChatGPT e parecer da rodada 1 do Claude ainda ausentes como arquivo |
+| 26/10/2026 | EM_REVISÃO | Análise da página `/telegram-avisos` depositada; RASTRO indica tela publicada, bot respondendo e envio ponta a ponta ainda não verificado |
 
 > **Regra:** nada sai da Mesa sem autorização explícita do Mediador. Nenhum arquivo deste caso deve ser enviado a terceiros, publicado ou transformado em implementação por iniciativa do Sistema.
