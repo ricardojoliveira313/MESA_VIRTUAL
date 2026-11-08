@@ -117,6 +117,23 @@ disse o quê, em qual versão, com qual evidência e o estado do caso em cada mo
 
 1. ✅ Mesa Virtual local (este protocolo + comandos).
 2. ⬜ Espelhar/operar a Mesa no Google Drive (MCP google_workspace).
-3. ⬜ GitHub (versionamento dos pareceres e documentos).
+3. ✅ GitHub (versionamento dos pareceres e documentos) — em uso para os casos listados no README.
 4. ⬜ Supabase (registro estruturado: decisões, versões, evidências, estados).
 5. ⬜ Playwright (automação de navegação para coletas e conferências).
+
+## 13. Nota de aplicação — o Mediador só aprova o consenso (08/11/2026)
+
+Reforçando o que os itens 4–8 já definem, para deixar explícito e sem ambiguidade: quando um
+caso está rodando aqui (parecer independente → revisão cruzada → matriz de divergências →
+consenso), os analistas **não** levam cada rodada intermediária ao Mediador. A discussão inteira
+acontece registrada nas pastas do caso. O Mediador só é chamado em dois momentos:
+
+1. Quando a seção 6 exige (fonte essencial faltando, afirmação que precisa de confirmação dele) —
+   isso já é regra dura, não mudou.
+2. Quando `07_CONSENSO/` está pronto: aí sim o analista leva ao Mediador algo como "Ricardo, foi
+   isso que chegamos em consenso, você aprova?" — resposta dele é sim/não/reabrir, não mediação
+   de cada ponto.
+
+Qualquer divergência entre analistas que não se resolva na revisão cruzada entra na matriz de
+divergências (seção 9) como **ponto que exige decisão do Mediador**, dentro do próprio
+`07_CONSENSO/` — não como mensagem solta fora da estrutura do caso.
