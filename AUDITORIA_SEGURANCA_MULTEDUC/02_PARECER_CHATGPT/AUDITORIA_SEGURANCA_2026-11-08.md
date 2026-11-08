@@ -8,7 +8,7 @@
 
 1. A view public.AlunoPermitido do ENSAIO permitia leitura de aluno de outra escola por UUID para admins; a tabela Aluno diretamente negava a mesma leitura.
 2. Corrigido no ENSAIO com security_invoker=true, preservando security_barrier; advisor deixou de sinalizar security_definer_view.
-3. A migração está em supabase/migrations/20261108131212_fix_alunopermitido_security_invoker.sql; o histórico do Supabase registra execução no timestamp 20261108131212. Alinhar antes da PR.
+3. A migration está em supabase/migrations/20261108131212_fix_alunopermitido_security_invoker.sql e corresponde ao timestamp 20261108131212 registrado no Supabase; o nome anterior (131143) foi corrigido na branch.
 4. O teste HTTP antes da correção confirmou vazamento; a repetição autenticada depois não foi possível nesta sessão. Isolamento ainda não pode ser declarado provado.
 5. Dados fictícios removidos do ENSAIO: contagem final zero para escola, turmas, alunos, usuários e sessões dos IDs sintéticos.
 6. npx tsc --noEmit e npm run build passaram; isso não substitui a regressão funcional completa.
@@ -79,7 +79,7 @@ Rollback:
 
     ALTER VIEW public."AlunoPermitido" RESET (security_invoker);
 
-A aplicação pelo Supabase registrou versão 20261108131212; arquivo criado inicialmente como 20261108131212. Alinhar o nome antes de considerar pronto para merge. A migração não foi aplicada no REL_AEE.
+A aplicação pelo Supabase registrou versão 20261108131212. O arquivo inicialmente criado com timestamp 20261108131143 foi renomeado na branch para coincidir com o registro. A migração não foi aplicada no REL_AEE.
 
 ## Testes executados
 
@@ -91,7 +91,7 @@ A aplicação pelo Supabase registrou versão 20261108131212; arquivo criado ini
 
 ## SQLs propostos
 
-1. supabase/migrations/20261108131212_fix_alunopermitido_security_invoker.sql — correção SECURITY INVOKER, aplicada apenas no ENSAIO; alinhar timestamp a 20261108131212.
+1. supabase/migrations/20261108131212_fix_alunopermitido_security_invoker.sql — correção SECURITY INVOKER, aplicada apenas no ENSAIO; arquivo alinhado ao histórico 20261108131212.
 2. Não foram produzidos SQLs de correção para outras funções/Edge Functions: inspeção e testes exigidos para recomendar mudança segura não foram concluídos. Evitam-se revogações genéricas que podem quebrar login, ativação ou RPCs.
 
 ## Itens não concluídos
@@ -109,7 +109,7 @@ A aplicação pelo Supabase registrou versão 20261108131212; arquivo criado ini
 
 ### Pode ir para produção
 
-Nenhuma correção pode ser aplicada no REL_AEE agora. O fix da view tem evidência da falha antes e evidência estrutural após no ENSAIO, mas faltam prova autenticada pós-fix, alinhamento de timestamp, regressão funcional e revisão cruzada.
+Nenhuma correção pode ser aplicada no REL_AEE agora. O fix da view tem evidência da falha antes e evidência estrutural após no ENSAIO, mas faltam prova autenticada pós-fix, regressão funcional e revisão cruzada.
 
 ### Precisa de decisão do Ricardo
 
