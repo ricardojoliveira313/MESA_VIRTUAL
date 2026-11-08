@@ -30,7 +30,7 @@ Consultas foram feitas nos dois projetos Supabase; no REL_AEE somente leitura. O
 | SEC-01 | D | Crítica | CONFERIDO | Dois admins sintéticos de escolas A/B leram o UUID do aluno oposto via AlunoPermitido; consulta direta em Aluno retornou zero. | security_invoker=true no ENSAIO; risco: view exige grants/RLS corretos nas tabelas base. Prova HTTP pós-fix pendente. |
 | SEC-02 | A | Alta | CONFERIDO | Histórico: 95 migrations REL_AEE e 38 ENSAIO; comparação com checkout parcial mostra divergência. Multiescola aparece aplicada diretamente no banco e não na lista de migrations aplicadas. | Conciliar migrations reproduzíveis; risco de execução duplicada ou fora de ordem. |
 | SEC-03 | A1 | Alta | PENDENTE | frontend/src/api.ts tem fallback para hxmw..., mas variáveis de hosting podem substituí-lo. Render não tinha workspace selecionado. | Confirmar workspace e variáveis sem revelar valores. |
-| SEC-04 | B/C | Alta | CONFERIDO PARCIAL | 195 SECURITY DEFINER no REL_AEE (174 públicas) e 216 no ENSAIO (194 públicas). Advisors: 132 funções públicas EXECUTE anon no REL_AEE; 134 anon e 31 authenticated no ENSAIO. | Sem REVOKE em massa: RPCs usam anon com token e helpers servem policies/views. Dez critérios por função e dependências não concluídos. |
+| SEC-04 | B/C | Alta | CONFERIDO PARCIAL | 195 SECURITY DEFINER no REL_AEE (174 públicas) e 216 no ENSAIO (194 públicas). Inventário completo de metadados em CSV anexo; advisors: 132 EXECUTE anon no REL_AEE; 134 anon e 31 authenticated no ENSAIO. | Sem REVOKE em massa: RPCs usam anon com token e helpers servem policies/views. Classificação e dez critérios por função, além do mapa de dependências, não concluídos. |
 | SEC-05 | D | Alta | CONFERIDO | Advisor ENSAIO: 12 tabelas RLS sem policy; grants anon/authenticated ausentes nas tabelas públicas/app examinadas. | Confirmar desenho RPC/Edge e default privileges; sem correção automática. |
 | SEC-06 | D | Média | CONFERIDO | Ambos os projetos têm default privileges para tabelas/funções; grants padrão amplos podem alcançar novos objetos. | Planejar revogações pontuais após mapear fluxos; mudança geral pode quebrar RPCs. |
 | SEC-07 | E | Média | CONFERIDO PARCIAL | 7 dias: 2026 Usuario INSERT 1/UPDATE 7; UsuarioAtivacaoCodigo INSERT 3/UPDATE 2; UsuarioSessao INSERT 44/UPDATE 7/DELETE 43. 2027 Usuario UPDATE 61; UsuarioAtivacaoCodigo INSERT 8/UPDATE 3/DELETE 13; UsuarioSessao INSERT 10/UPDATE 4/DELETE 5. Logs 24h: zero aviso no REL_AEE, 133 no ENSAIO. | Origem por fluxo específico não conclusiva; não alterar login sem rastrear chamadas. |
@@ -42,6 +42,8 @@ Consultas foram feitas nos dois projetos Supabase; no REL_AEE somente leitura. O
 | SEC-13 | G | Média | CONFERIDO PARCIAL | Varredura heurística do checkout atual: zero segredo de service_role, VAPID privada, token Telegram ou senha SMTP. Dois JWTs são chaves públicas anon. Checkout sem histórico Git; busca remota cobriu só a branch padrão. | Varredura integral de branches/histórico não concluída. |
 
 ## Inventário e paridade
+
+O CSV `inventario_security_definer_2026-11-08.csv` contém 411 linhas de funções (195 no REL_AEE e 216 no ENSAIO), com schema, nome, argumentos, owner, search_path e EXECUTE de anon/authenticated. Não inclui valores secretos. A análise de autorização, uso do token, escola/turma, colunas sensíveis, mensagens de erro, auditoria e rate limit segue parcial e não é substituída pelo inventário.
 
 | Métrica | REL_AEE 2026 | ENSAIO 2027 |
 |---|---:|---:|
@@ -61,7 +63,7 @@ AlunoPermitido tinha security_barrier=true e não tinha security_invoker=true. A
 ## Checklist A-H
 
 - A — Parcial. Contagens/diferenças e advisors consultados nos dois bancos. Matriz integral de migrações e A1 (Render) não fechados.
-- B — Parcial. Contagens e grants SECURITY DEFINER levantados. Exportação função a função e dependências procedurais incompletas; sem revogação em massa.
+- B — Parcial. Inventário completo de metadados e grants anexado em CSV (411 linhas, incluindo os dois projetos). Classificação 1/2/3, dez critérios por função e dependências procedurais incompletos; sem revogação em massa.
 - C — Pendente. Alguns RPCs inspecionados; usuario_admin_listar negou HTTP sem token e com token inválido. Testes de ataque de todas as funções/perfis/escolas e dez critérios por função não concluídos.
 - D — Parcial. View analisada e corrigida no ENSAIO; advisor estrutural limpo. Teste HTTP autenticado pós-fix e quatro perfis pendentes.
 - E — Parcial. Contagens e logs aferidos; atribuição do aviso a cada caminho de login/ativação não fechada.
@@ -130,7 +132,7 @@ Nenhuma correção pode ser aplicada no REL_AEE agora. O fix da view tem evidên
 
 1. Este parecer e as evidências anonimizadas do teste de acesso à view.
 2. Migration security_invoker do ENSAIO, timestamp alinhado e teste HTTP pós-fix.
-3. Lista completa de funções SECURITY DEFINER, grants e dependências.
+3. CSV completo de funções SECURITY DEFINER e, para fechar B/C, classificação e mapa de dependências/testes por função.
 4. Inventário integral de migrations por banco e branch, separando drift de diferença de timestamp.
 5. Relatório completo dos testes de ataque e regressão funcional.
 6. Evidência Render e backup/PITR sem valores de secrets.
