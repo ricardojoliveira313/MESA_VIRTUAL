@@ -1,23 +1,28 @@
 name: Checagem diária do DeepSeek (Mesa Virtual)
 
 # Roda de graça porque este repositório é público (minutos ilimitados do GitHub Actions
-# em repositório público). Não precisa do computador do Ricardo ligado.
+# em repositório público). Não precisa do computador do dono ligado.
 #
-# ANTES DE ATIVAR, o dono precisa:
-# 1) Adicionar o segredo DEEPSEEK_API_KEY em Settings > Secrets and variables > Actions
-#    (a mesma chave que já usa no OpenCode local).
-# 2) Confirmar e corrigir os dois pontos marcados "CONFERIR" abaixo, comparando com o que
-#    já funciona no OpenCode local dele — o comando de instalação e o nome exato do modelo
-#    DeepSeek podem não ser exatamente estes; não há certeza absoluta na documentação pública
-#    consultada.
+# Corrigido em 08/11/2026 (DeepSeek): 4 bloqueios resolvidos:
+#   1. clone do diario_classe (privado) agora usa o segredo DIARIO_CLASSE_TOKEN;
+#   2. instalação do OpenCode 2 pela URL oficial https://opencode.ai/v2/install;
+#   3. modelo trocado para deepseek/deepseek-flash (existe no OpenCode local do dono);
+#   4. permissions: contents: write para o git push final.
+#
+# ANTES DE MERGEAR:
+#   - o dono precisa adicionar o segredo DIARIO_CLASSE_TOKEN (PAT somente leitura
+#     do repositório ricardojoliveira313/diario_classe) em Settings > Secrets.
+#   - o segredo DEEPSEEK_API_KEY já existe.
+#   - testar uma vez manualmente pela aba Actions (workflow_dispatch) e conferir o log.
 
 on:
   schedule:
     # Todo dia, 10:41 UTC = 07:41 em Brasília (mesmo horário da checagem do Claude).
     - cron: "41 10 * * *"
   workflow_dispatch: {}
-    # Permite rodar manualmente (botão "Run workflow" na aba Actions) para testar antes
-    # de confiar no agendamento automático.
+
+permissions:
+  contents: write
 
 jobs:
   checagem:
@@ -27,17 +32,19 @@ jobs:
       - name: Clonar este repositório (mesa_virtual)
         uses: actions/checkout@v4
 
-      - name: Clonar o diario_classe também
-        run: git clone --depth 1 https://github.com/ricardojoliveira313/diario_classe.git ../diario_classe
+      - name: Clonar o diario_classe (privado, com token)
+        env:
+          GH_TOKEN: ${{ secrets.DIARIO_CLASSE_TOKEN }}
+        run: gh repo clone ricardojoliveira313/diario_classe ../diario_classe -- --depth 1
 
-      - name: Instalar o OpenCode  # CONFERIR: use o mesmo comando que já funciona no seu OpenCode local
-        run: curl -fsSL https://raw.githubusercontent.com/anomalyco/opencode/main/install | bash
+      - name: Instalar o OpenCode 2
+        run: curl -fsSL https://opencode.ai/v2/install | bash
 
-      - name: Checagem diária (RASTRO + Mesa Virtual)  # CONFERIR: nome exato do modelo DeepSeek
+      - name: Checagem diária (RASTRO + Mesa Virtual)
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
-          opencode run -m deepseek/deepseek-chat "Você é o analista DeepSeek da Mesa Virtual. \
+          opencode run --auto -m deepseek/deepseek-flash "Você é o analista DeepSeek da Mesa Virtual. \
           Leia o README.md deste repositório (mesa_virtual) para a lista de casos em andamento. \
           Para cada caso, leia 01_PERGUNTAS/00_ABERTURA.md e as pastas 02_PARECER_CHATGPT/, \
           03_PARECER_DEEPSEEK/, 04_PARECER_CLAUDE/ e 05_REVISAO_CRUZADA/, procurando algo que \
