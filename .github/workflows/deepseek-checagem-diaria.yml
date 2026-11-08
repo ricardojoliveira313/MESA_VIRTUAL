@@ -1,0 +1,60 @@
+name: Checagem diária do DeepSeek (Mesa Virtual)
+
+# Roda de graça porque este repositório é público (minutos ilimitados do GitHub Actions
+# em repositório público). Não precisa do computador do Ricardo ligado.
+#
+# ANTES DE ATIVAR, o dono precisa:
+# 1) Adicionar o segredo DEEPSEEK_API_KEY em Settings > Secrets and variables > Actions
+#    (a mesma chave que já usa no OpenCode local).
+# 2) Confirmar e corrigir os dois pontos marcados "CONFERIR" abaixo, comparando com o que
+#    já funciona no OpenCode local dele — o comando de instalação e o nome exato do modelo
+#    DeepSeek podem não ser exatamente estes; não há certeza absoluta na documentação pública
+#    consultada.
+
+on:
+  schedule:
+    # Todo dia, 10:41 UTC = 07:41 em Brasília (mesmo horário da checagem do Claude).
+    - cron: "41 10 * * *"
+  workflow_dispatch: {}
+    # Permite rodar manualmente (botão "Run workflow" na aba Actions) para testar antes
+    # de confiar no agendamento automático.
+
+jobs:
+  checagem:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Clonar este repositório (mesa_virtual)
+        uses: actions/checkout@v4
+
+      - name: Clonar o diario_classe também
+        run: git clone --depth 1 https://github.com/ricardojoliveira313/diario_classe.git ../diario_classe
+
+      - name: Instalar o OpenCode  # CONFERIR: use o mesmo comando que já funciona no seu OpenCode local
+        run: curl -fsSL https://raw.githubusercontent.com/anomalyco/opencode/main/install | bash
+
+      - name: Checagem diária (RASTRO + Mesa Virtual)  # CONFERIR: nome exato do modelo DeepSeek
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          opencode run -m deepseek/deepseek-chat "Você é o analista DeepSeek da Mesa Virtual. \
+          Leia o README.md deste repositório (mesa_virtual) para a lista de casos em andamento. \
+          Para cada caso, leia 01_PERGUNTAS/00_ABERTURA.md e as pastas 02_PARECER_CHATGPT/, \
+          03_PARECER_DEEPSEEK/, 04_PARECER_CLAUDE/ e 05_REVISAO_CRUZADA/, procurando algo que \
+          espera uma ação sua (parecer independente ainda ausente, ou revisão cruzada pendente \
+          dos pareceres dos outros analistas). Também leia ../diario_classe/RASTRO.md (topo) \
+          procurando o marcador 'Pendente: DeepSeek', se existir essa convenção. Siga \
+          MESA_VIRTUAL_PROTOCOLO.md: cite fonte exata em toda afirmação relevante, nunca invente \
+          documento, distinga fato provado de indício/hipótese/opinião, e se faltar fonte \
+          essencial ou a decisão exigir o Mediador (seção 6 do protocolo), registre isso como \
+          pendência dele e NÃO decida por conta própria. Se não houver nada pendente de você, \
+          não escreva nada e termine em silêncio."
+
+      - name: Commitar e enviar o que foi produzido (se houver)
+        run: |
+          git config user.name "DeepSeek (Mesa Virtual, via Actions)"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "Nada novo hoje — não commitando." && exit 0
+          git commit -m "docs(mesa-virtual): checagem diária do DeepSeek"
+          git push
