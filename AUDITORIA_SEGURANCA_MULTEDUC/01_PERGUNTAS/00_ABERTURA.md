@@ -1,5 +1,9 @@
 # ABERTURA — Auditoria de Segurança MultEduc
 
+**Coordenação:** aplicar seção 13 da Mesa Virtual e `docs/PROTOCOLO_COORDENACAO.md`: registrar análise e revisão cruzada no caso; não levar rodadas intermediárias ao Ricardo. Solicitá-lo apenas para fonte essencial/decisão reservada ou aprovação do consenso final.
+
+**Pendente: Codex faz** atualizar o caso em cada etapa e prosseguir com as provas e análises pendentes.
+
 **Estado:** EM_ANÁLISE  
 **Data:** 08/11/2026  
 **Pergunta central:** Os projetos REL_AEE 2026 e MultEduc ENSAIO 2027 estão seguros e em paridade suficiente para que as correções multiescola possam avançar sem risco de vazamento ou regressão?
